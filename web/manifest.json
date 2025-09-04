@@ -1,6 +1,6 @@
 {
-    "name": "space_scape_room",
-    "short_name": "space_scape_room",
+    "name": "space_escape_room",
+    "short_name": "space_escape_room",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

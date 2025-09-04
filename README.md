@@ -1,4 +1,4 @@
-# space_scape_room
+# space_escape_room
 
 A new Flutter project.
 

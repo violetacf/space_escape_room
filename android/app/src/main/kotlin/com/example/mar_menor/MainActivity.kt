@@ -1,4 +1,4 @@
-package com.example.space_scape_room
+package com.example.space_escape_room
 
 import io.flutter.embedding.android.FlutterActivity
 
