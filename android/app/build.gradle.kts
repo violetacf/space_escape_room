@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mar_menor"
+    namespace = "com.example.space_scape_room"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.mar_menor"
+        applicationId = "com.example.space_scape_room"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
