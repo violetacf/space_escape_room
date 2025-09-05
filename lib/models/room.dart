@@ -1,7 +1,7 @@
 class Room {
   final String question;
   final String answer;
-  final String hint; // nueva propiedad de pista
+  final String hint;
 
   Room({required this.question, required this.answer, required this.hint});
 }

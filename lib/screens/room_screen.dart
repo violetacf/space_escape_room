@@ -38,46 +38,43 @@ class _RoomScreenState extends State<RoomScreen>
     if (widget.level == "outside") {
       roomItems = [
         RoomItem(
-          name: "Astronauta",
-          hint:
-              "El astronauta señala algo brillante cerca de la nave: ‘A _ S _ R _’",
+          name: "Alien",
+          hint: "El alien parece señalar algo...",
           top: 250,
           left: 50,
           width: 100,
-          height: 150,
-          code: "ASTRO",
+          height: 100,
+          code: "ALIEN",
         ),
         RoomItem(
-          name: "Panel de la nave",
-          hint:
-              "El panel de la nave parpadea: ‘Usa el código que encontraste con el astronauta’",
+          name: "Star",
+          hint: "La estrella brilla con un código secreto",
           top: 200,
           left: 220,
-          width: 120,
-          height: 100,
-          code: "KEY123",
+          width: 80,
+          height: 80,
+          code: "STAR",
         ),
       ];
     } else {
       roomItems = [
         RoomItem(
-          name: "Panel principal",
-          hint: "Presiona los botones correctos para activar la cabina",
+          name: "Astronaut",
+          hint: "El astronauta señala algo brillante cerca de la nave",
           top: 180,
           left: 100,
           width: 120,
-          height: 100,
-          code: "ENTER",
+          height: 120,
+          code: "ASTRO",
         ),
         RoomItem(
-          name: "Caja de suministros",
-          hint:
-              "Dentro de la caja de suministros ves letras luminosas: ‘SPACE’",
+          name: "Panel",
+          hint: "El panel de la nave parpadea con un código secreto",
           top: 300,
           left: 220,
-          width: 100,
-          height: 80,
-          code: "SPACE",
+          width: 120,
+          height: 100,
+          code: "KEY123",
         ),
       ];
     }
@@ -158,14 +155,14 @@ class _RoomScreenState extends State<RoomScreen>
       ),
       body: Stack(
         children: [
+          // Fondo estrellado
           Image.asset(
-            widget.level == "outside"
-                ? 'assets/space_outside.jpg'
-                : 'assets/space_inside.jpg',
+            'assets/images/stars_background.jpg',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
           ),
+          // Objetos interactivos
           for (var item in roomItems)
             AnimatedBuilder(
               animation: _controller,
@@ -180,24 +177,16 @@ class _RoomScreenState extends State<RoomScreen>
                   height: item.height,
                   child: GestureDetector(
                     onTap: () => checkItem(item),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: solvedItems.contains(item.name)
-                              ? Colors.green
-                              : Colors.white,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: solvedItems.contains(item.name)
-                          ? const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: 40,
-                            )
-                          : null,
-                    ),
+                    child: solvedItems.contains(item.name)
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 40,
+                          )
+                        : Image.asset(
+                            'assets/images/${item.name.toLowerCase()}.png',
+                            fit: BoxFit.contain,
+                          ),
                   ),
                 );
               },

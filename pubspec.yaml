@@ -60,6 +60,11 @@ flutter:
   assets:
     - assets/space_outside.jpg
     - assets/space_inside.jpg
+    - assets/images/stars_background.jpg
+    - assets/images/astronaut.png
+    - assets/images/alien.png
+    - assets/images/panel.png
+    - assets/images/star.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
