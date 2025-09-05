@@ -27,8 +27,11 @@ class _FuturisticDialogState extends State<FuturisticDialog>
   @override
   void initState() {
     super.initState();
+    // Inicializa el AudioPlayer
     _audioPlayer = AudioPlayer();
     _playBeep();
+
+    // Animación para borde escaneador
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
@@ -36,8 +39,11 @@ class _FuturisticDialogState extends State<FuturisticDialog>
   }
 
   Future<void> _playBeep() async {
-    print("Playing beep sound");
-    await _audioPlayer.play(AssetSource('sounds/beep.mov'), volume: 1.0);
+    try {
+      await _audioPlayer.play(AssetSource('sounds/beep.mp3'));
+    } catch (e) {
+      print("Error reproduciendo sonido: $e");
+    }
   }
 
   @override
