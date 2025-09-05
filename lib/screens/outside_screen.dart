@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import '../models/room_item.dart';
-import 'result_screen.dart';
+import '/models/outside_item.dart';
+import 'panel_screen.dart';
 
-class RoomScreen extends StatefulWidget {
-  final String level;
-  const RoomScreen({super.key, required this.level});
+class OutsideScreen extends StatefulWidget {
+  const OutsideScreen({super.key});
 
   @override
-  State<RoomScreen> createState() => _RoomScreenState();
+  State<OutsideScreen> createState() => _OutsideScreenState();
 }
 
-class _RoomScreenState extends State<RoomScreen>
+class _OutsideScreenState extends State<OutsideScreen>
     with SingleTickerProviderStateMixin {
   final Set<String> solvedItems = {};
-  late List<RoomItem> roomItems;
+  late List<OutsideItem> outsideItems;
 
   late AnimationController _controller;
   late Animation<double> _floatAnimation;
@@ -21,7 +20,27 @@ class _RoomScreenState extends State<RoomScreen>
   @override
   void initState() {
     super.initState();
-    _initLevel();
+
+    outsideItems = [
+      OutsideItem(
+        name: "Alien",
+        hint: "El alien susurra: ‘Usa ASTRO como parte de la clave’",
+        top: 250,
+        left: 50,
+        width: 100,
+        height: 100,
+        code: "ASTRO",
+      ),
+      OutsideItem(
+        name: "Star",
+        hint: "La estrella brilla y revela: ‘STAR’",
+        top: 200,
+        left: 220,
+        width: 80,
+        height: 80,
+        code: "STAR",
+      ),
+    ];
 
     _controller = AnimationController(
       vsync: this,
@@ -34,53 +53,7 @@ class _RoomScreenState extends State<RoomScreen>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
-  void _initLevel() {
-    if (widget.level == "outside") {
-      roomItems = [
-        RoomItem(
-          name: "Alien",
-          hint: "El alien parece señalar algo...",
-          top: 250,
-          left: 50,
-          width: 100,
-          height: 100,
-          code: "ALIEN",
-        ),
-        RoomItem(
-          name: "Star",
-          hint: "La estrella brilla con un código secreto",
-          top: 200,
-          left: 220,
-          width: 80,
-          height: 80,
-          code: "STAR",
-        ),
-      ];
-    } else {
-      roomItems = [
-        RoomItem(
-          name: "Astronaut",
-          hint: "El astronauta señala algo brillante cerca de la nave",
-          top: 180,
-          left: 100,
-          width: 120,
-          height: 120,
-          code: "ASTRO",
-        ),
-        RoomItem(
-          name: "Panel",
-          hint: "El panel de la nave parpadea con un código secreto",
-          top: 300,
-          left: 220,
-          width: 120,
-          height: 100,
-          code: "KEY123",
-        ),
-      ];
-    }
-  }
-
-  void checkItem(RoomItem item) {
+  void checkItem(OutsideItem item) {
     TextEditingController controller = TextEditingController();
     showDialog(
       context: context,
@@ -115,7 +88,7 @@ class _RoomScreenState extends State<RoomScreen>
                   ],
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
               Text(
                 item.hint,
                 style: const TextStyle(color: Colors.white70, fontSize: 16),
@@ -129,11 +102,11 @@ class _RoomScreenState extends State<RoomScreen>
                   hintText: "Introduce el código",
                   hintStyle: const TextStyle(color: Colors.white38),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.cyanAccent.shade200),
+                    borderSide: BorderSide(color: Colors.cyanAccent),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blueAccent.shade200),
+                    borderSide: BorderSide(color: Colors.blueAccent),
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
@@ -143,8 +116,6 @@ class _RoomScreenState extends State<RoomScreen>
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.cyanAccent.shade200,
                   foregroundColor: Colors.black,
-                  elevation: 6,
-                  shadowColor: Colors.blueAccent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -155,7 +126,12 @@ class _RoomScreenState extends State<RoomScreen>
                     solvedItems.add(item.name);
                     Navigator.pop(context);
                     setState(() {});
-                    _checkLevelCompletion();
+                    if (solvedItems.length == outsideItems.length) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => const PanelScreen()),
+                      );
+                    }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -173,22 +149,6 @@ class _RoomScreenState extends State<RoomScreen>
     );
   }
 
-  void _checkLevelCompletion() {
-    if (solvedItems.length == roomItems.length) {
-      if (widget.level == "outside") {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const RoomScreen(level: "inside")),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const ResultScreen()),
-        );
-      }
-    }
-  }
-
   @override
   void dispose() {
     _controller.dispose();
@@ -198,22 +158,16 @@ class _RoomScreenState extends State<RoomScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.level == "outside" ? "Fuera de la nave" : "Dentro de la nave",
-        ),
-      ),
+      appBar: AppBar(title: const Text("Fuera de la nave")),
       body: Stack(
         children: [
-          // Fondo estrellado
           Image.asset(
             'assets/images/stars_background.jpg',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
           ),
-          // Objetos interactivos
-          for (var item in roomItems)
+          for (var item in outsideItems)
             AnimatedBuilder(
               animation: _controller,
               builder: (context, child) {

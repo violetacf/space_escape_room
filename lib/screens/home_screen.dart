@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'room_screen.dart';
+import 'outside_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -9,53 +9,56 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Fondo estrellado
           Image.asset(
-            'assets/images/stars_background.jpg',
+            'assets/space_outside.jpg',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
           ),
-          // Capa semi-transparente para contraste
-          Container(color: Colors.black.withOpacity(0.3)),
-          // Botón central
           Center(
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const RoomScreen(level: "outside"),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset("assets/images/astronaut.png", height: 150),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.cyanAccent, width: 2),
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurpleAccent.shade700,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40,
-                  vertical: 20,
+                  child: const Text(
+                    "¡Estamos atrapados fuera de la nave! 🚀\n\n"
+                    "Necesitamos observar lo que nos rodea y recoger pistas. "
+                    "Con esas pistas podremos descubrir el código secreto para abrir el panel de la nave y volver a entrar. ",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 8,
-                shadowColor: Colors.black,
-              ),
-              child: const Text(
-                "Empezar aventura!",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  shadows: [
-                    Shadow(
-                      offset: Offset(1, 1),
-                      blurRadius: 4,
-                      color: Colors.black54,
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.cyanAccent,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 15,
                     ),
-                  ],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const OutsideScreen()),
+                    );
+                  },
+                  child: const Text("Empezar aventura"),
                 ),
-              ),
+              ],
             ),
           ),
         ],

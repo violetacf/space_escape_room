@@ -1,4 +1,4 @@
-class RoomItem {
+class OutsideItem {
   final String name;
   final String hint; // la pista que se muestra al tocar el objeto
   final double top;
@@ -7,7 +7,7 @@ class RoomItem {
   final double height;
   final String code; // código que desbloquea el objeto
 
-  RoomItem({
+  OutsideItem({
     required this.name,
     required this.hint,
     required this.top,
