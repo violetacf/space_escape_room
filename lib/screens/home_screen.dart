@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'outside_screen.dart';
+import 'outside_screen1.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
       body: Stack(
         children: [
           Image.asset(
-            'assets/space_outside.jpg',
+            'assets/images/backgrounds/space_outside.jpg',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
@@ -31,8 +31,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                   child: const Text(
                     "¡Estamos atrapados fuera de la nave! 🚀\n\n"
-                    "Necesitamos observar lo que nos rodea y recoger pistas. "
-                    "Con esas pistas podremos descubrir el código secreto para abrir el panel de la nave y volver a entrar.",
+                    "Necesitamos observar nuestro entorno y resolver enigmas "
+                    "para descubrir la clave que nos permitirá volver a entrar.",
                     style: TextStyle(color: Colors.white, fontSize: 16),
                     textAlign: TextAlign.center,
                   ),
@@ -51,7 +51,10 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/outside');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const OutsideScreen1()),
+                    );
                   },
                   child: const Text("Empezar aventura"),
                 ),

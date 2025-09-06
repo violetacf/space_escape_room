@@ -10,7 +10,7 @@ class InsideScreen extends StatelessWidget {
       body: Stack(
         children: [
           Image.asset(
-            'assets/space_inside.jpg',
+            'assets/images/backgrounds/space_inside.jpg',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,

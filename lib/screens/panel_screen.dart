@@ -13,7 +13,7 @@ class PanelScreen extends StatelessWidget {
       body: Stack(
         children: [
           Image.asset(
-            'assets/images/stars_background.jpg',
+            'assets/images/backgrounds/stars_background.jpg',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
@@ -35,7 +35,7 @@ class PanelScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       const Text(
-                        "Introduce la clave secreta:",
+                        "Introduce la clave secreta final:",
                         style: TextStyle(
                           color: Colors.cyanAccent,
                           fontSize: 18,
@@ -67,9 +67,15 @@ class PanelScreen extends StatelessWidget {
                           foregroundColor: Colors.black,
                         ),
                         onPressed: () {
-                          if (controller.text.trim().toUpperCase() ==
-                              "ASTROSTAR") {
-                            Navigator.pushReplacementNamed(context, '/inside');
+                          // Para este ejemplo, combinamos respuestas correctas de los puzzles
+                          if (controller.text.trim().toLowerCase() ==
+                              "azul10mercurio20") {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const InsideScreen(),
+                              ),
+                            );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
