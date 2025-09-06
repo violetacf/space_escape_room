@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/futuristic_dialog.dart';
-import 'panel_screen.dart';
+import 'outside_screen3.dart';
 
 class OutsideScreen2 extends StatefulWidget {
   const OutsideScreen2({super.key});
@@ -93,7 +93,7 @@ class _OutsideScreen2State extends State<OutsideScreen2>
                 if (solvedPuzzles.length == 2) {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => const PanelScreen()),
+                    MaterialPageRoute(builder: (_) => const OutsideScreen3()),
                   );
                 }
               } else {
