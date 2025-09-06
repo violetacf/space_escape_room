@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/outside_item.dart';
 import '../widgets/futuristic_dialog.dart';
-import 'panel_screen.dart'; 
+import 'panel_screen.dart';
 
 class OutsideScreen extends StatefulWidget {
   const OutsideScreen({super.key});
@@ -32,7 +32,6 @@ class _OutsideScreenState extends State<OutsideScreen>
       end: 5,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    // Mensaje inicial del astronauta
     Future.delayed(Duration.zero, () {
       _showAstronautIntro();
     });
@@ -69,8 +68,7 @@ class _OutsideScreenState extends State<OutsideScreen>
       builder: (_) => FuturisticDialog(
         title: "Mensaje del astronauta",
         message:
-            "Estamos fuera de la nave.\nDebemos observar lo que nos rodea para descifrar la clave "
-            "y poder entrar de nuevo.",
+            "Estamos fuera de la nave.\nDebemos observar lo que nos rodea para descifrar la clave y poder entrar de nuevo.",
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -111,16 +109,10 @@ class _OutsideScreenState extends State<OutsideScreen>
                   item.code.toUpperCase()) {
                 solvedItems.add(item.name);
                 Navigator.pop(context);
-
-                // Verificar si todas las pistas están resueltas
                 if (solvedItems.length == outsideItems.length) {
-                  // Navegar a la pantalla del panel
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PanelScreen()),
-                  );
+                  Navigator.pushReplacementNamed(context, '/panel');
                 } else {
-                  setState(() {}); // Solo actualizar checkmarks
+                  setState(() {});
                 }
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -149,14 +141,12 @@ class _OutsideScreenState extends State<OutsideScreen>
       appBar: AppBar(title: const Text("Fuera de la nave")),
       body: Stack(
         children: [
-          // Fondo
           Image.asset(
             'assets/images/stars_background.jpg',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
           ),
-          // Objetos interactivos
           for (var item in outsideItems)
             AnimatedBuilder(
               animation: _controller,

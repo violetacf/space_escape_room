@@ -32,7 +32,7 @@ class HomeScreen extends StatelessWidget {
                   child: const Text(
                     "¡Estamos atrapados fuera de la nave! 🚀\n\n"
                     "Necesitamos observar lo que nos rodea y recoger pistas. "
-                    "Con esas pistas podremos descubrir el código secreto para abrir el panel de la nave y volver a entrar. ",
+                    "Con esas pistas podremos descubrir el código secreto para abrir el panel de la nave y volver a entrar.",
                     style: TextStyle(color: Colors.white, fontSize: 16),
                     textAlign: TextAlign.center,
                   ),
@@ -51,10 +51,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const OutsideScreen()),
-                    );
+                    Navigator.pushNamed(context, '/outside');
                   },
                   child: const Text("Empezar aventura"),
                 ),

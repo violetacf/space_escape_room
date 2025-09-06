@@ -69,12 +69,7 @@ class PanelScreen extends StatelessWidget {
                         onPressed: () {
                           if (controller.text.trim().toUpperCase() ==
                               "ASTROSTAR") {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const InsideScreen(),
-                              ),
-                            );
+                            Navigator.pushReplacementNamed(context, '/inside');
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(

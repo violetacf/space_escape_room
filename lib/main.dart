@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
+import 'screens/outside_screen.dart';
+import 'screens/panel_screen.dart';
+import 'screens/inside_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
@@ -11,9 +14,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (_) => const HomeScreen(),
+        '/outside': (_) => const OutsideScreen(),
+        '/panel': (_) => const PanelScreen(),
+        '/inside': (_) => const InsideScreen(),
+      },
     );
   }
 }
