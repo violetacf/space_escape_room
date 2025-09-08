@@ -114,36 +114,64 @@ class _OutsideScreen1State extends State<OutsideScreen1>
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Scaffold(
       appBar: LevelTopBar(),
       body: LevelBackground(
-        child: Stack(
-          children: [
-            Positioned(
-              top: 200,
-              left: 50,
-              child: PuzzleObject(
-                puzzleId: 'alien',
-                solved: solvedPuzzles.contains('alien'),
-                imagePath: 'assets/images/alien.png',
-                width: 100,
-                height: 100,
-                onTap: () => _showPuzzleDialog('alien'),
-              ),
-            ),
-            Positioned(
-              top: 250,
-              left: 220,
-              child: PuzzleObject(
-                puzzleId: 'star',
-                solved: solvedPuzzles.contains('star'),
-                imagePath: 'assets/images/star.png',
-                width: 80,
-                height: 80,
-                onTap: () => _showPuzzleDialog('star'),
-              ),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: isLandscape
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    PuzzleObject(
+                      puzzleId: 'alien',
+                      solved: solvedPuzzles.contains('alien'),
+                      imagePath: 'assets/images/alien.png',
+                      width: 100,
+                      height: 100,
+                      onTap: () => _showPuzzleDialog('alien'),
+                    ),
+                    PuzzleObject(
+                      puzzleId: 'star',
+                      solved: solvedPuzzles.contains('star'),
+                      imagePath: 'assets/images/star.png',
+                      width: 80,
+                      height: 80,
+                      onTap: () => _showPuzzleDialog('star'),
+                    ),
+                  ],
+                )
+              : Stack(
+                  children: [
+                    Positioned(
+                      top: 200,
+                      left: 50,
+                      child: PuzzleObject(
+                        puzzleId: 'alien',
+                        solved: solvedPuzzles.contains('alien'),
+                        imagePath: 'assets/images/alien.png',
+                        width: 100,
+                        height: 100,
+                        onTap: () => _showPuzzleDialog('alien'),
+                      ),
+                    ),
+                    Positioned(
+                      top: 250,
+                      left: 220,
+                      child: PuzzleObject(
+                        puzzleId: 'star',
+                        solved: solvedPuzzles.contains('star'),
+                        imagePath: 'assets/images/star.png',
+                        width: 80,
+                        height: 80,
+                        onTap: () => _showPuzzleDialog('star'),
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );

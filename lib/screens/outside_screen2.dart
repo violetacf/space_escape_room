@@ -115,6 +115,9 @@ class _OutsideScreen2State extends State<OutsideScreen2>
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Scaffold(
       appBar: LevelTopBar(
         onBack: () {
@@ -125,33 +128,58 @@ class _OutsideScreen2State extends State<OutsideScreen2>
         },
       ),
       body: LevelBackground(
-        child: Stack(
-          children: [
-            Positioned(
-              top: 180,
-              left: 70,
-              child: PuzzleObject(
-                puzzleId: 'planet',
-                solved: solvedPuzzles.contains('planet'),
-                imagePath: 'assets/images/planet.png',
-                width: 100,
-                height: 100,
-                onTap: () => _showPuzzleDialog('planet'),
-              ),
-            ),
-            Positioned(
-              top: 260,
-              left: 220,
-              child: PuzzleObject(
-                puzzleId: 'moon',
-                solved: solvedPuzzles.contains('moon'),
-                imagePath: 'assets/images/moon.png',
-                width: 80,
-                height: 80,
-                onTap: () => _showPuzzleDialog('moon'),
-              ),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: isLandscape
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    PuzzleObject(
+                      puzzleId: 'planet',
+                      solved: solvedPuzzles.contains('planet'),
+                      imagePath: 'assets/images/planet.png',
+                      width: 100,
+                      height: 100,
+                      onTap: () => _showPuzzleDialog('planet'),
+                    ),
+                    PuzzleObject(
+                      puzzleId: 'moon',
+                      solved: solvedPuzzles.contains('moon'),
+                      imagePath: 'assets/images/moon.png',
+                      width: 80,
+                      height: 80,
+                      onTap: () => _showPuzzleDialog('moon'),
+                    ),
+                  ],
+                )
+              : Stack(
+                  children: [
+                    Positioned(
+                      top: 180,
+                      left: 70,
+                      child: PuzzleObject(
+                        puzzleId: 'planet',
+                        solved: solvedPuzzles.contains('planet'),
+                        imagePath: 'assets/images/planet.png',
+                        width: 100,
+                        height: 100,
+                        onTap: () => _showPuzzleDialog('planet'),
+                      ),
+                    ),
+                    Positioned(
+                      top: 260,
+                      left: 220,
+                      child: PuzzleObject(
+                        puzzleId: 'moon',
+                        solved: solvedPuzzles.contains('moon'),
+                        imagePath: 'assets/images/moon.png',
+                        width: 80,
+                        height: 80,
+                        onTap: () => _showPuzzleDialog('moon'),
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );

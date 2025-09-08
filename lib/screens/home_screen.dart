@@ -48,6 +48,9 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -58,33 +61,80 @@ class _HomeScreenState extends State<HomeScreen>
             height: double.infinity,
           ),
           Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingImage(
-                  animation: _floatingAnimation,
-                  imagePath: "assets/images/astronaut.png",
-                  height: 150,
-                ),
-                const SizedBox(height: 20),
-                StoryBox(
-                  fadeAnimation: _fadeAnimation,
-                  text:
-                      "We’re trapped outside the spaceship! 🚀\n\n"
-                      "We need to explore our surroundings and solve puzzles "
-                      "to discover the code that will let us back inside.",
-                ),
-                const SizedBox(height: 30),
-                AdventureButton(
-                  label: "Start adventure",
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const OutsideScreen1()),
-                    );
-                  },
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: isLandscape
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          child: FloatingImage(
+                            animation: _floatingAnimation,
+                            imagePath: "assets/images/astronaut.png",
+                            height: 150,
+                          ),
+                        ),
+                        const SizedBox(width: 40),
+                        Flexible(
+                          flex: 2,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              StoryBox(
+                                fadeAnimation: _fadeAnimation,
+                                text:
+                                    "We’re trapped outside the spaceship! 🚀\n\n"
+                                    "We need to explore our surroundings and solve puzzles "
+                                    "to discover the code that will let us back inside.",
+                              ),
+                              const SizedBox(height: 30),
+                              AdventureButton(
+                                label: "Start adventure",
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const OutsideScreen1(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FloatingImage(
+                          animation: _floatingAnimation,
+                          imagePath: "assets/images/astronaut.png",
+                          height: 150,
+                        ),
+                        const SizedBox(height: 20),
+                        StoryBox(
+                          fadeAnimation: _fadeAnimation,
+                          text:
+                              "We’re trapped outside the spaceship! 🚀\n\n"
+                              "We need to explore our surroundings and solve puzzles "
+                              "to discover the code that will let us back inside.",
+                        ),
+                        const SizedBox(height: 30),
+                        AdventureButton(
+                          label: "Start adventure",
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const OutsideScreen1(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
             ),
           ),
         ],

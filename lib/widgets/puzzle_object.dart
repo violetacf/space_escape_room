@@ -28,6 +28,7 @@ class _PuzzleObjectState extends State<PuzzleObject>
   late Animation<double> _animation;
 
   @override
+
   void initState() {
     super.initState();
     _controller = AnimationController(

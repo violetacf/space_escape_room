@@ -9,6 +9,8 @@ class PanelScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextEditingController controller = TextEditingController();
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Scaffold(
       appBar: LevelTopBar(
@@ -16,28 +18,70 @@ class PanelScreen extends StatelessWidget {
       ),
       body: LevelBackground(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset("assets/images/panel.png", height: 200),
-              const SizedBox(height: 20),
-              _PanelInputContainer(
-                controller: controller,
-                onSubmit: () {
-                  if (controller.text.trim().toLowerCase() ==
-                      "blue10mercury20") {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => const InsideScreen()),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Incorrect key 🚫")),
-                    );
-                  }
-                },
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: isLandscape
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: Image.asset(
+                          "assets/images/panel.png",
+                          height: 200,
+                        ),
+                      ),
+                      const SizedBox(width: 30),
+                      Flexible(
+                        flex: 1,
+                        child: _PanelInputContainer(
+                          controller: controller,
+                          onSubmit: () {
+                            if (controller.text.trim().toLowerCase() ==
+                                "blue10mercury20") {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const InsideScreen(),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Incorrect key 🚫"),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset("assets/images/panel.png", height: 200),
+                      const SizedBox(height: 20),
+                      _PanelInputContainer(
+                        controller: controller,
+                        onSubmit: () {
+                          if (controller.text.trim().toLowerCase() ==
+                              "blue10mercury20") {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const InsideScreen(),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Incorrect key 🚫")),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
           ),
         ),
       ),
