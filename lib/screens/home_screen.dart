@@ -1,8 +1,50 @@
 import 'package:flutter/material.dart';
+import '../widgets/floating_image.dart';
+import '../widgets/story_box.dart';
+import '../widgets/adventure_button.dart';
 import 'outside_screen1.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _floatingAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
+
+    _floatingAnimation = Tween<double>(
+      begin: -15,
+      end: 15,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.3, curve: Curves.easeIn),
+      ),
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,44 +61,28 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset("assets/images/astronaut.png", height: 150),
+                FloatingImage(
+                  animation: _floatingAnimation,
+                  imagePath: "assets/images/astronaut.png",
+                  height: 150,
+                ),
                 const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  margin: const EdgeInsets.symmetric(horizontal: 30),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.cyanAccent, width: 2),
-                  ),
-                  child: const Text(
-                    "¡Estamos atrapados fuera de la nave! 🚀\n\n"
-                    "Necesitamos observar nuestro entorno y resolver enigmas "
-                    "para descubrir la clave que nos permitirá volver a entrar.",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
+                StoryBox(
+                  fadeAnimation: _fadeAnimation,
+                  text:
+                      "We’re trapped outside the spaceship! 🚀\n\n"
+                      "We need to explore our surroundings and solve puzzles "
+                      "to discover the code that will let us back inside.",
                 ),
                 const SizedBox(height: 30),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.cyanAccent,
-                    foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 15,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                AdventureButton(
+                  label: "Start adventure",
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const OutsideScreen1()),
                     );
                   },
-                  child: const Text("Empezar aventura"),
                 ),
               ],
             ),
