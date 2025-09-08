@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../widgets/futuristic_dialog.dart';
 import '../widgets/puzzle_object.dart';
 import '../widgets/level_top_bar.dart';
+import '../widgets/level_background.dart';
+import '../data/puzzles_data.dart';
 import 'outside_screen2.dart';
 
 class OutsideScreen1 extends StatefulWidget {
@@ -17,18 +19,7 @@ class _OutsideScreen1State extends State<OutsideScreen1>
   late AnimationController _controller;
   late Animation<double> _floatAnimation;
 
-  final Map<String, Map<String, String>> puzzles = {
-    'alien': {
-      'question':
-          "The alien is holding a color sequence: blue, red, blue, green.\nWhat’s the next color?",
-      'answer': "blue",
-    },
-    'star': {
-      'question':
-          "The star shows a number pattern: 2, 4, 6, 8.\nWhat’s the next number?",
-      'answer': "10",
-    },
-  };
+  Map<String, Map<String, String>> get puzzles => puzzlesData[1]!;
 
   @override
   void initState() {
@@ -124,40 +115,36 @@ class _OutsideScreen1State extends State<OutsideScreen1>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: LevelTopBar(), // <-- replaced AppBar
-      body: Stack(
-        children: [
-          Image.asset(
-            'assets/images/backgrounds/stars_background.jpg',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-          Positioned(
-            top: 200,
-            left: 50,
-            child: PuzzleObject(
-              puzzleId: 'alien',
-              solved: solvedPuzzles.contains('alien'),
-              imagePath: 'assets/images/alien.png',
-              width: 100,
-              height: 100,
-              onTap: () => _showPuzzleDialog('alien'),
+      appBar: LevelTopBar(),
+      body: LevelBackground(
+        child: Stack(
+          children: [
+            Positioned(
+              top: 200,
+              left: 50,
+              child: PuzzleObject(
+                puzzleId: 'alien',
+                solved: solvedPuzzles.contains('alien'),
+                imagePath: 'assets/images/alien.png',
+                width: 100,
+                height: 100,
+                onTap: () => _showPuzzleDialog('alien'),
+              ),
             ),
-          ),
-          Positioned(
-            top: 250,
-            left: 220,
-            child: PuzzleObject(
-              puzzleId: 'star',
-              solved: solvedPuzzles.contains('star'),
-              imagePath: 'assets/images/star.png',
-              width: 80,
-              height: 80,
-              onTap: () => _showPuzzleDialog('star'),
+            Positioned(
+              top: 250,
+              left: 220,
+              child: PuzzleObject(
+                puzzleId: 'star',
+                solved: solvedPuzzles.contains('star'),
+                imagePath: 'assets/images/star.png',
+                width: 80,
+                height: 80,
+                onTap: () => _showPuzzleDialog('star'),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

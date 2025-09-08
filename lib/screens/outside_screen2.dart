@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../widgets/futuristic_dialog.dart';
 import '../widgets/puzzle_object.dart';
 import '../widgets/level_top_bar.dart';
+import '../widgets/level_background.dart';
+import '../data/puzzles_data.dart';
 import 'outside_screen1.dart';
 import 'outside_screen3.dart';
 
@@ -18,18 +20,7 @@ class _OutsideScreen2State extends State<OutsideScreen2>
   late AnimationController _controller;
   late Animation<double> _floatAnimation;
 
-  final Map<String, Map<String, String>> puzzles = {
-    'planet': {
-      'question':
-          "The planet shows scrambled letters: Y R E M C U R .\nRearrange them to form the planet's name.",
-      'answer': "mercury",
-    },
-    'moon': {
-      'question':
-          "The moon shows numbers: 5, 10, 15...?. What is the next number?",
-      'answer': "20",
-    },
-  };
+  Map<String, Map<String, String>> get puzzles => puzzlesData[2]!;
 
   @override
   void initState() {
@@ -133,39 +124,35 @@ class _OutsideScreen2State extends State<OutsideScreen2>
           );
         },
       ),
-      body: Stack(
-        children: [
-          Image.asset(
-            'assets/images/backgrounds/stars_background.jpg',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-          Positioned(
-            top: 180,
-            left: 70,
-            child: PuzzleObject(
-              puzzleId: 'planet',
-              solved: solvedPuzzles.contains('planet'),
-              imagePath: 'assets/images/planet.png',
-              width: 100,
-              height: 100,
-              onTap: () => _showPuzzleDialog('planet'),
+      body: LevelBackground(
+        child: Stack(
+          children: [
+            Positioned(
+              top: 180,
+              left: 70,
+              child: PuzzleObject(
+                puzzleId: 'planet',
+                solved: solvedPuzzles.contains('planet'),
+                imagePath: 'assets/images/planet.png',
+                width: 100,
+                height: 100,
+                onTap: () => _showPuzzleDialog('planet'),
+              ),
             ),
-          ),
-          Positioned(
-            top: 260,
-            left: 220,
-            child: PuzzleObject(
-              puzzleId: 'moon',
-              solved: solvedPuzzles.contains('moon'),
-              imagePath: 'assets/images/moon.png',
-              width: 80,
-              height: 80,
-              onTap: () => _showPuzzleDialog('moon'),
+            Positioned(
+              top: 260,
+              left: 220,
+              child: PuzzleObject(
+                puzzleId: 'moon',
+                solved: solvedPuzzles.contains('moon'),
+                imagePath: 'assets/images/moon.png',
+                width: 80,
+                height: 80,
+                onTap: () => _showPuzzleDialog('moon'),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

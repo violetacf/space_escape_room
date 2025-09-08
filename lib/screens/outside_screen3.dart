@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/futuristic_dialog.dart';
+import '../widgets/level_top_bar.dart';
+import '../widgets/level_background.dart';
+import 'outside_screen2.dart';
 import 'outside_screen4.dart';
 
 class OutsideScreen3 extends StatefulWidget {
@@ -21,8 +24,8 @@ class _OutsideScreen3State extends State<OutsideScreen3> {
         return StatefulBuilder(
           builder: (context, setState) {
             return FuturisticDialog(
-              title: "Panel de luces",
-              message: "Toca los cuadrados en el orden correcto.",
+              title: "Light Panel",
+              message: "Tap the squares in the correct order.",
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -51,24 +54,20 @@ class _OutsideScreen3State extends State<OutsideScreen3> {
                                     (i) => playerInput[i],
                                   ).join() ==
                                   correctSequence.join()) {
-                                Navigator.pop(context); // cerrar puzzle
+                                Navigator.pop(context); // close puzzle
 
-                                // Navegar después de cerrar el diálogo
                                 Future.microtask(() {
                                   showDialog(
-                                    context: this
-                                        .context, // context del widget padre
+                                    context: this.context,
                                     barrierDismissible: false,
                                     builder: (_) => FuturisticDialog(
-                                      title: "¡Secuencia correcta!",
+                                      title: "Correct Sequence!",
                                       message:
-                                          "Has completado el nivel 3 🚀\nContinúa al siguiente nivel.",
+                                          "You’ve completed level 3 🚀\nContinue to the next level.",
                                       actions: [
                                         TextButton(
                                           onPressed: () {
-                                            Navigator.pop(
-                                              this.context,
-                                            ); // cerrar dialogo
+                                            Navigator.pop(this.context);
                                             Navigator.pushReplacement(
                                               this.context,
                                               MaterialPageRoute(
@@ -77,7 +76,7 @@ class _OutsideScreen3State extends State<OutsideScreen3> {
                                               ),
                                             );
                                           },
-                                          child: const Text("Continuar"),
+                                          child: const Text("Continue"),
                                         ),
                                       ],
                                     ),
@@ -88,7 +87,7 @@ class _OutsideScreen3State extends State<OutsideScreen3> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                      "Secuencia incorrecta, inténtalo de nuevo",
+                                      "Incorrect sequence, try again",
                                     ),
                                   ),
                                 );
@@ -113,7 +112,7 @@ class _OutsideScreen3State extends State<OutsideScreen3> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("Cerrar"),
+                  child: const Text("Close"),
                 ),
               ],
             );
@@ -131,13 +130,13 @@ class _OutsideScreen3State extends State<OutsideScreen3> {
         context: context,
         barrierDismissible: false,
         builder: (_) => FuturisticDialog(
-          title: "Astronauta",
+          title: "Astronaut",
           message:
-              "Nivel final: toca los cuadrados en el orden correcto para desbloquear la nave.",
+              "Final level: tap the squares in the correct order to unlock the spaceship.",
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Vamos allá"),
+              child: const Text("Let’s go"),
             ),
           ],
         ),
@@ -148,34 +147,30 @@ class _OutsideScreen3State extends State<OutsideScreen3> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Fuera de la nave - Nivel 3")),
-      body: Stack(
-        children: [
-          Image.asset(
-            'assets/images/backgrounds/stars_background.jpg',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.cyanAccent,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                  vertical: 20,
-                ),
-              ),
-              onPressed: _showPanelPuzzle,
-              child: const Text(
-                "Interactúa con el panel de luces",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
-              ),
+      appBar: LevelTopBar(
+        onBack: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const OutsideScreen2()),
+          );
+        },
+      ),
+      body: LevelBackground(
+        child: Center(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.cyanAccent,
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+            ),
+            onPressed: _showPanelPuzzle,
+            child: const Text(
+              "Interact with the light panel",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

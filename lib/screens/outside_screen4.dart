@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../widgets/futuristic_dialog.dart';
+import '../widgets/level_top_bar.dart';
+import '../widgets/level_background.dart';
+import 'outside_screen3.dart';
 import 'panel_screen.dart';
 
 class OutsideScreen4 extends StatefulWidget {
@@ -11,6 +15,7 @@ class OutsideScreen4 extends StatefulWidget {
 
 class _OutsideScreen4State extends State<OutsideScreen4> {
   void _showColorPatternPuzzle() {
+    final parentContext = context; // capture screen context for navigation
     List<Color> correctPattern = [
       Colors.green,
       Colors.blue,
@@ -18,17 +23,18 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
       Colors.yellow,
     ];
     List<int> playerInput = [];
+    Set<int> currentlyTapped = {}; // track tapped squares for visual feedback
 
     showDialog(
-      context: context,
+      context: parentContext,
       barrierDismissible: false,
       builder: (_) {
         return StatefulBuilder(
           builder: (context, setState) {
             return FuturisticDialog(
-              title: "Nivel 4 - Patrón de colores",
+              title: "Level 4 - Color Pattern",
               message:
-                  "Toca los colores en el orden correcto para desbloquear la nave.",
+                  "Tap the colors in the correct order to unlock the spaceship.",
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -36,8 +42,15 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
                     spacing: 12,
                     runSpacing: 12,
                     children: List.generate(correctPattern.length, (index) {
-                      Color displayColor = Colors.grey;
+                      // default display color
+                      Color displayColor = correctPattern[index];
 
+                      // brief visual feedback for tap
+                      if (currentlyTapped.contains(index)) {
+                        displayColor = displayColor.withOpacity(0.5);
+                      }
+
+                      // correctness feedback (after input)
                       if (playerInput.length > index) {
                         displayColor = playerInput[index] == index
                             ? Colors.green
@@ -45,7 +58,18 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
                       }
 
                       return GestureDetector(
+                        onTapDown: (_) {
+                          setState(() => currentlyTapped.add(index));
+                        },
+                        onTapUp: (_) {
+                          setState(() => currentlyTapped.remove(index));
+                        },
+                        onTapCancel: () {
+                          setState(() => currentlyTapped.remove(index));
+                        },
                         onTap: () {
+                          HapticFeedback.selectionClick();
+
                           setState(() {
                             playerInput.add(index);
 
@@ -59,42 +83,46 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
                               }
 
                               if (correct) {
-                                Navigator.pop(context); // cerrar puzzle
-                                Future.microtask(() {
-                                  showDialog(
-                                    context: this
-                                        .context, // context del widget padre
-                                    barrierDismissible: false,
-                                    builder: (_) => FuturisticDialog(
-                                      title: "¡Correcto!",
-                                      message:
-                                          "Has completado el nivel 4 🚀\nAhora puedes entrar al panel.",
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(
-                                              this.context,
-                                            ); // cerrar diálogo
-                                            Navigator.pushReplacement(
-                                              this.context,
-                                              MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const PanelScreen(),
-                                              ),
-                                            );
-                                          },
-                                          child: const Text("Continuar"),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                });
+                                HapticFeedback.lightImpact();
+
+                                Navigator.pop(parentContext); // close puzzle
+
+                                // show success dialog
+                                showDialog(
+                                  context: parentContext,
+                                  barrierDismissible: false,
+                                  builder: (_) => FuturisticDialog(
+                                    title: "Correct!",
+                                    message:
+                                        "You’ve completed level 4 🚀\nNow you can enter the panel.",
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(
+                                            parentContext,
+                                          ); // close success dialog
+                                          Navigator.pushReplacement(
+                                            parentContext,
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  const PanelScreen(),
+                                            ),
+                                          );
+                                        },
+                                        child: const Text("Continue"),
+                                      ),
+                                    ],
+                                  ),
+                                );
                               } else {
+                                HapticFeedback.vibrate();
                                 playerInput.clear();
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                ScaffoldMessenger.of(
+                                  parentContext,
+                                ).showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                      "Secuencia incorrecta, inténtalo de nuevo",
+                                      "Incorrect sequence, try again",
                                     ),
                                   ),
                                 );
@@ -102,11 +130,12 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
                             }
                           });
                         },
-                        child: Container(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 150),
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
-                            color: correctPattern[index],
+                            color: displayColor,
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(color: Colors.white, width: 2),
                           ),
@@ -118,8 +147,8 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("Cerrar"),
+                  onPressed: () => Navigator.pop(parentContext),
+                  child: const Text("Close"),
                 ),
               ],
             );
@@ -138,17 +167,15 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Fuera de la nave - Nivel 4")),
-      body: Stack(
-        children: [
-          Image.asset(
-            'assets/images/backgrounds/stars_background.jpg',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-        ],
+      appBar: LevelTopBar(
+        onBack: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const OutsideScreen3()),
+          );
+        },
       ),
+      body: LevelBackground(child: const SizedBox.shrink()),
     );
   }
 }
