@@ -15,7 +15,7 @@ class OutsideScreen4 extends StatefulWidget {
 
 class _OutsideScreen4State extends State<OutsideScreen4> {
   void _showColorPatternPuzzle() {
-    final parentContext = context; // capture screen context for navigation
+    final parentContext = context;
     List<Color> correctPattern = [
       Colors.green,
       Colors.blue,
@@ -23,7 +23,7 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
       Colors.yellow,
     ];
     List<int> playerInput = [];
-    Set<int> currentlyTapped = {}; // track tapped squares for visual feedback
+    Set<int> currentlyTapped = {};
 
     showDialog(
       context: parentContext,
@@ -42,15 +42,10 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
                     spacing: 12,
                     runSpacing: 12,
                     children: List.generate(correctPattern.length, (index) {
-                      // default display color
                       Color displayColor = correctPattern[index];
-
-                      // brief visual feedback for tap
                       if (currentlyTapped.contains(index)) {
                         displayColor = displayColor.withOpacity(0.5);
                       }
-
-                      // correctness feedback (after input)
                       if (playerInput.length > index) {
                         displayColor = playerInput[index] == index
                             ? Colors.green
@@ -58,21 +53,16 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
                       }
 
                       return GestureDetector(
-                        onTapDown: (_) {
-                          setState(() => currentlyTapped.add(index));
-                        },
-                        onTapUp: (_) {
-                          setState(() => currentlyTapped.remove(index));
-                        },
-                        onTapCancel: () {
-                          setState(() => currentlyTapped.remove(index));
-                        },
+                        onTapDown: (_) =>
+                            setState(() => currentlyTapped.add(index)),
+                        onTapUp: (_) =>
+                            setState(() => currentlyTapped.remove(index)),
+                        onTapCancel: () =>
+                            setState(() => currentlyTapped.remove(index)),
                         onTap: () {
                           HapticFeedback.selectionClick();
-
                           setState(() {
                             playerInput.add(index);
-
                             if (playerInput.length == correctPattern.length) {
                               bool correct = true;
                               for (int i = 0; i < correctPattern.length; i++) {
@@ -84,10 +74,8 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
 
                               if (correct) {
                                 HapticFeedback.lightImpact();
+                                Navigator.pop(parentContext);
 
-                                Navigator.pop(parentContext); // close puzzle
-
-                                // show success dialog
                                 showDialog(
                                   context: parentContext,
                                   barrierDismissible: false,
@@ -98,10 +86,8 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
                                     actions: [
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.pop(
-                                            parentContext,
-                                          ); // close success dialog
-                                          Navigator.pushReplacement(
+                                          Navigator.pop(parentContext);
+                                          Navigator.push(
                                             parentContext,
                                             MaterialPageRoute(
                                               builder: (_) =>
@@ -159,23 +145,30 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, _showColorPatternPuzzle);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: LevelTopBar(
         onBack: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const OutsideScreen3()),
-          );
+          Navigator.pop(context); // back to OutsideScreen3
         },
       ),
-      body: LevelBackground(child: const SizedBox.shrink()),
+      body: LevelBackground(
+        child: Center(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.cyanAccent,
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+            ),
+            onPressed: _showColorPatternPuzzle,
+            child: const Text(
+              "Start the color pattern puzzle",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
