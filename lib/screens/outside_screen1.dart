@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/futuristic_dialog.dart';
+import '../widgets/puzzle_object.dart';
+import '../widgets/level_top_bar.dart';
 import 'outside_screen2.dart';
 
 class OutsideScreen1 extends StatefulWidget {
@@ -14,6 +16,19 @@ class _OutsideScreen1State extends State<OutsideScreen1>
   final Set<String> solvedPuzzles = {};
   late AnimationController _controller;
   late Animation<double> _floatAnimation;
+
+  final Map<String, Map<String, String>> puzzles = {
+    'alien': {
+      'question':
+          "The alien is holding a color sequence: blue, red, blue, green.\nWhat’s the next color?",
+      'answer': "blue",
+    },
+    'star': {
+      'question':
+          "The star shows a number pattern: 2, 4, 6, 8.\nWhat’s the next number?",
+      'answer': "10",
+    },
+  };
 
   @override
   void initState() {
@@ -38,14 +53,13 @@ class _OutsideScreen1State extends State<OutsideScreen1>
       context: context,
       barrierDismissible: false,
       builder: (_) => FuturisticDialog(
-        title: "Mensaje del astronauta",
+        title: "Message from the astronaut",
         message:
-            "Estamos fuera de la nave.\nResuelve los enigmas de los objetos "
-            "espaciales para obtener pistas y avanzar.",
+            "We are outside the spaceship.\nSolve the puzzles of the space objects to collect clues and move forward.",
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Empezar a explorar"),
+            child: const Text("Start exploring"),
           ),
         ],
       ),
@@ -53,22 +67,12 @@ class _OutsideScreen1State extends State<OutsideScreen1>
   }
 
   void _showPuzzleDialog(String puzzleId) {
-    String question = '';
-    String answer = '';
+    final puzzle = puzzles[puzzleId];
+    if (puzzle == null) return;
 
-    if (puzzleId == 'alien') {
-      question =
-          "El alien sostiene una secuencia de colores: azul, rojo, azul, verde. "
-          "¿Cuál es el siguiente color?";
-      answer = "azul";
-    } else if (puzzleId == 'star') {
-      question =
-          "La estrella muestra un patrón de números: 2, 4, 6, 8. "
-          "¿Cuál es el siguiente número?";
-      answer = "10";
-    }
-
-    TextEditingController controller = TextEditingController();
+    final String question = puzzle['question']!;
+    final String answer = puzzle['answer']!;
+    final TextEditingController controller = TextEditingController();
 
     showDialog(
       context: context,
@@ -79,7 +83,7 @@ class _OutsideScreen1State extends State<OutsideScreen1>
           controller: controller,
           style: const TextStyle(color: Colors.white),
           decoration: const InputDecoration(
-            hintText: "Escribe tu respuesta",
+            hintText: "Type your answer",
             hintStyle: TextStyle(color: Colors.white38),
           ),
         ),
@@ -92,7 +96,7 @@ class _OutsideScreen1State extends State<OutsideScreen1>
                 Navigator.pop(context);
                 setState(() {});
 
-                if (solvedPuzzles.length == 2) {
+                if (solvedPuzzles.length == puzzles.length) {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (_) => const OutsideScreen2()),
@@ -100,13 +104,11 @@ class _OutsideScreen1State extends State<OutsideScreen1>
                 }
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Respuesta incorrecta, inténtalo de nuevo"),
-                  ),
+                  const SnackBar(content: Text("Incorrect answer, try again.")),
                 );
               }
             },
-            child: const Text("Comprobar"),
+            child: const Text("Check"),
           ),
         ],
       ),
@@ -122,7 +124,7 @@ class _OutsideScreen1State extends State<OutsideScreen1>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Fuera de la nave - Nivel 1")),
+      appBar: LevelTopBar(), // <-- replaced AppBar
       body: Stack(
         children: [
           Image.asset(
@@ -134,33 +136,25 @@ class _OutsideScreen1State extends State<OutsideScreen1>
           Positioned(
             top: 200,
             left: 50,
-            width: 100,
-            height: 100,
-            child: GestureDetector(
+            child: PuzzleObject(
+              puzzleId: 'alien',
+              solved: solvedPuzzles.contains('alien'),
+              imagePath: 'assets/images/alien.png',
+              width: 100,
+              height: 100,
               onTap: () => _showPuzzleDialog('alien'),
-              child: solvedPuzzles.contains('alien')
-                  ? const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                      size: 50,
-                    )
-                  : Image.asset('assets/images/alien.png'),
             ),
           ),
           Positioned(
             top: 250,
             left: 220,
-            width: 80,
-            height: 80,
-            child: GestureDetector(
+            child: PuzzleObject(
+              puzzleId: 'star',
+              solved: solvedPuzzles.contains('star'),
+              imagePath: 'assets/images/star.png',
+              width: 80,
+              height: 80,
               onTap: () => _showPuzzleDialog('star'),
-              child: solvedPuzzles.contains('star')
-                  ? const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                      size: 50,
-                    )
-                  : Image.asset('assets/images/star.png'),
             ),
           ),
         ],
