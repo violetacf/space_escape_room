@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/futuristic_dialog.dart';
 import '../widgets/level_top_bar.dart';
 import '../widgets/level_background.dart';
-import 'outside_screen2.dart';
+import '../data/game_state.dart';
 import 'outside_screen4.dart';
 
 class OutsideScreen3 extends StatefulWidget {
@@ -13,9 +13,14 @@ class OutsideScreen3 extends StatefulWidget {
 }
 
 class _OutsideScreen3State extends State<OutsideScreen3> {
+  final GameState gameState = GameState();
+  List<int> playerInput = [];
+
   void _showPanelPuzzle() {
-    List<int> correctSequence = [1, 3, 2, 4];
-    List<int> playerInput = [];
+    final List<int> correctSequence = [1, 3, 2, 4];
+    playerInput = List.from(
+      gameState.puzzleAnswers['level3_panel']?.split(',').map(int.parse) ?? [],
+    );
 
     showDialog(
       context: context,
@@ -47,6 +52,8 @@ class _OutsideScreen3State extends State<OutsideScreen3> {
                         onTap: () {
                           setState(() {
                             playerInput.add(index + 1);
+                            gameState.puzzleAnswers['level3_panel'] =
+                                playerInput.join(',');
 
                             if (playerInput.length == correctSequence.length) {
                               if (List.generate(
@@ -84,6 +91,7 @@ class _OutsideScreen3State extends State<OutsideScreen3> {
                                 });
                               } else {
                                 playerInput.clear();
+                                gameState.puzzleAnswers.remove('level3_panel');
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
@@ -122,6 +130,31 @@ class _OutsideScreen3State extends State<OutsideScreen3> {
     );
   }
 
+  void _showSummaryDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => FuturisticDialog(
+        title: "Summary of Answers",
+        message: "Here are the answers you've provided so far:",
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: gameState.puzzleAnswers.entries.map((entry) {
+            return Text(
+              "${entry.key}: ${entry.value}",
+              style: const TextStyle(color: Colors.white),
+            );
+          }).toList(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Close"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -147,14 +180,7 @@ class _OutsideScreen3State extends State<OutsideScreen3> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: LevelTopBar(
-        onBack: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const OutsideScreen2()),
-          );
-        },
-      ),
+      appBar: LevelTopBar(onSummary: _showSummaryDialog, showDebugMenu: true),
       body: LevelBackground(
         child: Center(
           child: ElevatedButton(

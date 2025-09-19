@@ -2,13 +2,12 @@ final Map<int, Map<String, Map<String, String>>> puzzlesData = {
   1: {
     'alien': {
       'question':
-          "The alien is holding a color sequence: blue, red, blue, green...\nWhat’s the next color?",
-      'answer': "blue",
+          "The alien is holding a color sequence: yellow, red, blue, yellow, blue...\nWhat’s the next color?",
+      'answer': "red",
     },
     'star': {
-      'question':
-          "The star shows a number pattern: 2, 4, 6, 8...\nWhat’s the next number?",
-      'answer': "10",
+      'question': "The star shows a number pattern...\nWhat’s is the number?",
+      'answer': "3127",
     },
   },
   2: {
@@ -25,3 +24,7 @@ final Map<int, Map<String, Map<String, String>>> puzzlesData = {
   },
   // TODO: Add more levels here
 };
+
+
+// TO add atributes to designers:
+// <a href="https://www.flaticon.com/free-icons/sparkle" title="sparkle icons">Sparkle icons created by GOWI - Flaticon</a>

@@ -76,3 +76,11 @@ assets/
  ├─ images/
  └─ sounds/
 ```
+
+## Run with the script
+
+In your terminal:
+
+```bash
+./run_game.sh
+```

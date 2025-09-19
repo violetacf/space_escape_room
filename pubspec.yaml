@@ -60,15 +60,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     # Images
-    - assets/images/backgrounds/space_outside.jpg
-    - assets/images/backgrounds/space_inside.jpg
-    - assets/images/backgrounds/stars_background.jpg
-    - assets/images/astronaut.png
-    - assets/images/alien.png
-    - assets/images/panel.png
-    - assets/images/star.png
-    - assets/images/planet.png
-    - assets/images/moon.png
+    - assets/images/
+    - assets/images/backgrounds/
+    - assets/images/puzzles/
 
     # Sounds
     - assets/sounds/beep.mp3

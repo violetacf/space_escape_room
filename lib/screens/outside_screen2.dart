@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import '../widgets/futuristic_dialog.dart';
 import '../widgets/puzzle_object.dart';
-import '../widgets/level_top_bar.dart';
 import '../widgets/level_background.dart';
+import '../widgets/level_top_bar.dart';
 import '../data/puzzles_data.dart';
-import 'outside_screen1.dart';
+import '../data/levels_config.dart';
+import '../data/puzzle_positions.dart';
+import '../data/game_state.dart';
+import '../utils/dialog_utils.dart';
+import '../widgets/futuristic_dialog.dart';
 import 'outside_screen3.dart';
 
 class OutsideScreen2 extends StatefulWidget {
@@ -14,40 +17,28 @@ class OutsideScreen2 extends StatefulWidget {
   State<OutsideScreen2> createState() => _OutsideScreen2State();
 }
 
-class _OutsideScreen2State extends State<OutsideScreen2>
-    with SingleTickerProviderStateMixin {
-  final Set<String> solvedPuzzles = {};
-  late AnimationController _controller;
-  late Animation<double> _floatAnimation;
-
-  Map<String, Map<String, String>> get puzzles => puzzlesData[2]!;
+class _OutsideScreen2State extends State<OutsideScreen2> {
+  final GameState gameState = GameState();
+  final int level = 2;
+  late final LevelConfig config;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
+    config = levelsConfig[level]!;
 
-    _floatAnimation = Tween<double>(
-      begin: -5,
-      end: 5,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-
-    Future.delayed(Duration.zero, () {
-      _showAstronautHint();
-    });
+    // Intro only for this level
+    Future.delayed(Duration.zero, _showIntro);
   }
 
-  void _showAstronautHint() {
+  void _showIntro() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => FuturisticDialog(
-        title: "Astronaut",
-        message:
-            "You’ve reached level 2. Solve these new puzzles to collect more clues.",
+        type: LevelDialogType.intro,
+        title: "Welcome to Level $level",
+        message: config.introMessage,
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -58,49 +49,25 @@ class _OutsideScreen2State extends State<OutsideScreen2>
     );
   }
 
-  void _showPuzzleDialog(String puzzleId) {
-    final puzzle = puzzles[puzzleId];
-    if (puzzle == null) return;
-
-    final String question = puzzle['question']!;
-    final String answer = puzzle['answer']!;
-    final TextEditingController controller = TextEditingController();
-
+  void _showNextLevelDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => FuturisticDialog(
-        title: "Puzzle",
-        message: question,
-        content: TextField(
-          controller: controller,
-          style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
-            hintText: "Type your answer",
-            hintStyle: TextStyle(color: Colors.white38),
-          ),
-        ),
+        type: LevelDialogType.nextLevel,
+        title: "Next Level!",
+        message:
+            "Congratulations! You solved all the puzzles.\nGet ready for the next level.",
         actions: [
           TextButton(
             onPressed: () {
-              if (controller.text.trim().toLowerCase() ==
-                  answer.toLowerCase()) {
-                solvedPuzzles.add(puzzleId);
-                Navigator.pop(context);
-                setState(() {});
-
-                if (solvedPuzzles.length == puzzles.length) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const OutsideScreen3()),
-                  );
-                }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Incorrect answer, try again.")),
-                );
-              }
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const OutsideScreen3()),
+              );
             },
-            child: const Text("Check"),
+            child: const Text("Continue"),
           ),
         ],
       ),
@@ -108,78 +75,54 @@ class _OutsideScreen2State extends State<OutsideScreen2>
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final puzzles = puzzlesData[level]!;
 
     return Scaffold(
       appBar: LevelTopBar(
-        onBack: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const OutsideScreen1()),
-          );
-        },
+        onSummary: () => DialogUtils.showSummaryDialog(
+          context: context,
+          level: level,
+          puzzles: puzzles,
+          gameState: gameState,
+          title: config.summaryTitle,
+        ),
+        showDebugMenu: true,
       ),
       body: LevelBackground(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: isLandscape
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    PuzzleObject(
-                      puzzleId: 'planet',
-                      solved: solvedPuzzles.contains('planet'),
-                      imagePath: 'assets/images/planet.png',
-                      width: 100,
-                      height: 100,
-                      onTap: () => _showPuzzleDialog('planet'),
-                    ),
-                    PuzzleObject(
-                      puzzleId: 'moon',
-                      solved: solvedPuzzles.contains('moon'),
-                      imagePath: 'assets/images/moon.png',
-                      width: 80,
-                      height: 80,
-                      onTap: () => _showPuzzleDialog('moon'),
-                    ),
-                  ],
-                )
-              : Stack(
-                  children: [
-                    Positioned(
-                      top: 180,
-                      left: 70,
-                      child: PuzzleObject(
-                        puzzleId: 'planet',
-                        solved: solvedPuzzles.contains('planet'),
-                        imagePath: 'assets/images/planet.png',
-                        width: 100,
-                        height: 100,
-                        onTap: () => _showPuzzleDialog('planet'),
-                      ),
-                    ),
-                    Positioned(
-                      top: 260,
-                      left: 220,
-                      child: PuzzleObject(
-                        puzzleId: 'moon',
-                        solved: solvedPuzzles.contains('moon'),
-                        imagePath: 'assets/images/moon.png',
-                        width: 80,
-                        height: 80,
-                        onTap: () => _showPuzzleDialog('moon'),
-                      ),
-                    ),
-                  ],
+        child: Stack(
+          children: puzzlePositions[level]!.entries.map((entry) {
+            final puzzleId = entry.key;
+            final pos = entry.value;
+
+            return Positioned(
+              top: pos.top,
+              left: pos.left,
+              child: PuzzleObject(
+                puzzleId: puzzleId,
+                solved:
+                    gameState.solvedPuzzles[level]?.contains(puzzleId) ?? false,
+                imagePath: config.puzzleImages[puzzleId]!,
+                width: pos.width,
+                height: pos.height,
+                onTap: () => DialogUtils.showPuzzleDialog(
+                  context: context,
+                  level: level,
+                  puzzleId: puzzleId,
+                  puzzles: puzzles,
+                  dialogImages: config.dialogImages,
+                  gameState: gameState,
+                  onSolved: () {
+                    setState(() {});
+                    if (gameState.solvedPuzzles[level]!.length ==
+                        puzzles.length) {
+                      _showNextLevelDialog();
+                    }
+                  },
                 ),
+              ),
+            );
+          }).toList(),
         ),
       ),
     );

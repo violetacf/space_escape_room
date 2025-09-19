@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import '../widgets/futuristic_dialog.dart';
 import '../widgets/level_top_bar.dart';
 import '../widgets/level_background.dart';
-import 'outside_screen3.dart';
 import 'panel_screen.dart';
 
 class OutsideScreen4 extends StatefulWidget {
@@ -16,14 +15,126 @@ class OutsideScreen4 extends StatefulWidget {
 class _OutsideScreen4State extends State<OutsideScreen4> {
   void _showColorPatternPuzzle() {
     final parentContext = context;
-    List<Color> correctPattern = [
-      Colors.green,
-      Colors.blue,
+
+    final List<int> fullPattern = [0, 2, 0, 3, 1];
+    final List<Color> starColors = [
       Colors.red,
       Colors.yellow,
+      Colors.blue,
+      Colors.green,
     ];
+
     List<int> playerInput = [];
-    Set<int> currentlyTapped = {};
+    int? blinkingStar;
+    bool patternPlaying = false;
+
+    Future<void> playPattern(Function setStateCallback) async {
+      setStateCallback(() {
+        patternPlaying = true;
+        blinkingStar = null;
+        playerInput.clear();
+      });
+
+      for (int index in fullPattern) {
+        setStateCallback(() => blinkingStar = index);
+        await Future.delayed(const Duration(milliseconds: 1000));
+        setStateCallback(() => blinkingStar = null);
+        await Future.delayed(const Duration(milliseconds: 600));
+      }
+
+      setStateCallback(() => patternPlaying = false);
+    }
+
+    Widget starWidget(int index) {
+      Color baseColor = starColors[index];
+      bool isBlinking = blinkingStar == index;
+
+      Color displayColor = isBlinking
+          ? baseColor.withOpacity(1.0)
+          : baseColor.withOpacity(0.3);
+
+      return GestureDetector(
+        onTap: patternPlaying
+            ? null
+            : () {
+                HapticFeedback.selectionClick();
+                setState(() {
+                  playerInput.add(index);
+                  int currentStep = playerInput.length - 1;
+
+                  if (playerInput[currentStep] != fullPattern[currentStep]) {
+                    HapticFeedback.vibrate();
+                    playerInput.clear();
+                    ScaffoldMessenger.of(parentContext).showSnackBar(
+                      const SnackBar(
+                        content: Text("Incorrect sequence, try again"),
+                      ),
+                    );
+                    return;
+                  }
+
+                  if (playerInput.length == fullPattern.length) {
+                    HapticFeedback.lightImpact();
+                    Navigator.pop(parentContext);
+
+                    showDialog(
+                      context: parentContext,
+                      barrierDismissible: false,
+                      builder: (_) => FuturisticDialog(
+                        title: "Correct!",
+                        message:
+                            "You’ve completed level 4 🚀\nNow you can enter the panel.",
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(parentContext);
+                              Navigator.push(
+                                parentContext,
+                                MaterialPageRoute(
+                                  builder: (_) => const PanelScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text("Continue"),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                });
+              },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: displayColor,
+            boxShadow: isBlinking
+                ? [
+                    BoxShadow(
+                      color: baseColor.withOpacity(0.8),
+                      blurRadius: 20,
+                      spreadRadius: 6,
+                    ),
+                    BoxShadow(
+                      color: baseColor.withOpacity(0.5),
+                      blurRadius: 40,
+                      spreadRadius: 12,
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      color: baseColor.withOpacity(0.5),
+                      blurRadius: 8,
+                      spreadRadius: 2,
+                    ),
+                  ],
+          ),
+          child: const Icon(Icons.star, color: Colors.white, size: 36),
+        ),
+      );
+    }
 
     showDialog(
       context: parentContext,
@@ -32,109 +143,33 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
         return StatefulBuilder(
           builder: (context, setState) {
             return FuturisticDialog(
-              title: "Level 4 - Color Pattern",
+              title: "Level 4 - Star Pattern",
               message:
-                  "Tap the colors in the correct order to unlock the spaceship.",
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children: List.generate(correctPattern.length, (index) {
-                      Color displayColor = correctPattern[index];
-                      if (currentlyTapped.contains(index)) {
-                        displayColor = displayColor.withOpacity(0.5);
-                      }
-                      if (playerInput.length > index) {
-                        displayColor = playerInput[index] == index
-                            ? Colors.green
-                            : Colors.red;
-                      }
-
-                      return GestureDetector(
-                        onTapDown: (_) =>
-                            setState(() => currentlyTapped.add(index)),
-                        onTapUp: (_) =>
-                            setState(() => currentlyTapped.remove(index)),
-                        onTapCancel: () =>
-                            setState(() => currentlyTapped.remove(index)),
-                        onTap: () {
-                          HapticFeedback.selectionClick();
-                          setState(() {
-                            playerInput.add(index);
-                            if (playerInput.length == correctPattern.length) {
-                              bool correct = true;
-                              for (int i = 0; i < correctPattern.length; i++) {
-                                if (playerInput[i] != i) {
-                                  correct = false;
-                                  break;
-                                }
-                              }
-
-                              if (correct) {
-                                HapticFeedback.lightImpact();
-                                Navigator.pop(parentContext);
-
-                                showDialog(
-                                  context: parentContext,
-                                  barrierDismissible: false,
-                                  builder: (_) => FuturisticDialog(
-                                    title: "Correct!",
-                                    message:
-                                        "You’ve completed level 4 🚀\nNow you can enter the panel.",
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(parentContext);
-                                          Navigator.push(
-                                            parentContext,
-                                            MaterialPageRoute(
-                                              builder: (_) =>
-                                                  const PanelScreen(),
-                                            ),
-                                          );
-                                        },
-                                        child: const Text("Continue"),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              } else {
-                                HapticFeedback.vibrate();
-                                playerInput.clear();
-                                ScaffoldMessenger.of(
-                                  parentContext,
-                                ).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      "Incorrect sequence, try again",
-                                    ),
-                                  ),
-                                );
-                              }
-                            }
-                          });
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 150),
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: displayColor,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.white, width: 2),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ],
+                  "Repeat the sequence of stars in the correct order to unlock the spaceship.",
+              content: SizedBox(
+                width: 200,
+                height: 200,
+                child: Stack(
+                  children: [
+                    Positioned(top: 0, left: 80, child: starWidget(0)),
+                    Positioned(top: 80, left: 0, child: starWidget(1)),
+                    Positioned(top: 80, right: 0, child: starWidget(2)),
+                    Positioned(bottom: 0, left: 80, child: starWidget(3)),
+                  ],
+                ),
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(parentContext),
                   child: const Text("Close"),
+                ),
+                TextButton(
+                  onPressed: patternPlaying
+                      ? null
+                      : () {
+                          playPattern(setState);
+                        },
+                  child: const Text("Repeat Pattern"),
                 ),
               ],
             );
@@ -144,14 +179,30 @@ class _OutsideScreen4State extends State<OutsideScreen4> {
     );
   }
 
+  void _showSummaryDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => FuturisticDialog(
+        title: "Summary of Answers",
+        message: "Here are the answers you've provided so far:",
+        content: const Text(
+          "Level 4 puzzle not saved yet.",
+          style: TextStyle(color: Colors.white),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Close"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: LevelTopBar(
-        onBack: () {
-          Navigator.pop(context); // back to OutsideScreen3
-        },
-      ),
+      appBar: LevelTopBar(onSummary: _showSummaryDialog, showDebugMenu: true),
       body: LevelBackground(
         child: Center(
           child: ElevatedButton(

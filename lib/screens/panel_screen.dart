@@ -6,6 +6,31 @@ import 'inside_screen.dart';
 class PanelScreen extends StatelessWidget {
   const PanelScreen({super.key});
 
+  // Show the summary of previous questions / clues for the final key
+  void _showSummaryDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => AlertDialog(
+        title: const Text("Summary"),
+        content: const Text(
+          "Here’s a summary of previous clues 🔑:\n\n"
+          "Level 1: 'red' and 3127\n"
+          "Level 2: 'mercury' and 20'\n"
+          "Level 3: Light panel sequence was 1,3,2,4\n"
+          "Level 4: Star pattern sequence was red, blue, red, green, yellow\n\n"
+          "Use these clues to figure out the final secret key for the spaceship.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Close"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final TextEditingController controller = TextEditingController();
@@ -14,7 +39,8 @@ class PanelScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: LevelTopBar(
-        onBack: () => Navigator.pop(context), // back to OutsideScreen4
+        onSummary: () => _showSummaryDialog(context),
+        showDebugMenu: true,
       ),
       body: LevelBackground(
         child: Center(

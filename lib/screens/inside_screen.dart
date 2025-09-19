@@ -5,17 +5,32 @@ import '../widgets/level_background.dart';
 class InsideScreen extends StatelessWidget {
   const InsideScreen({super.key});
 
+  void _showSummaryDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => AlertDialog(
+        title: const Text("Summary"),
+        content: const Text("You’ve entered the spaceship! 🎉"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Close"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: LevelTopBar(
-        onBack: () {
-          Navigator.pop(context); // go back to PanelScreen or previous
-        },
+        onSummary: () => _showSummaryDialog(context),
+        showDebugMenu: true, // optional, keep consistent with other screens
       ),
       body: LevelBackground(
-        backgroundImage:
-            "assets/images/backgrounds/space_inside.jpg", // custom image
+        backgroundImage: "assets/images/backgrounds/space_inside.jpg",
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(16),
